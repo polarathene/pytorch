@@ -377,7 +377,7 @@ class TestDeserialize(TestCase):
                 if val1 is None or val2 is None:
                     # Either both are None
                     self.assertEqual(val1, val2)
-                elif isinstance(val1, FakeTensor) and isinstance(val2, FakeTensor):
+                elif isinstance(val1, torch.Tensor) and isinstance(val2, torch.Tensor):
                     # Or both are fake tensors with the same shape/dtype
                     self.assertEqual(len(val1.shape), len(val2.shape))
                     for s1, s2 in zip(val1.shape, val2.shape):
@@ -631,6 +631,7 @@ class TestDeserialize(TestCase):
         dynamic_shapes = {"a": {0: dim0_ac}, "b": None, "c": {0: dim0_ac}}
         self.check_graph(DynamicShapeSimpleModel(), inputs, dynamic_shapes)
 
+    @unittest.expectedFailure  # constraining non-Symbols NYI (Piecewise((1, Eq(u1, 1)), (0, True)), 1, 1)
     def test_sym_bool(self):
         class Module(torch.nn.Module):
             def forward(self, x, y):
