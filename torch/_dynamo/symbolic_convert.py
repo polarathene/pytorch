@@ -1359,8 +1359,8 @@ class InstructionTranslatorBase(
             return self.store_attr_graph_break(inst)
         val, obj = self.popn(2)
 
-        if isinstance(obj, NNModuleVariable):
-            # We don't allow side effects during export
+        if isinstance(obj, NNModuleVariable) and not isinstance(val, ConstantVariable):
+            # We don't allow side effects during export on non-constant values
             # https://github.com/pytorch/torchdynamo/issues/1475
             assert (
                 not self.export
@@ -2498,7 +2498,11 @@ class InliningInstructionTranslator(InstructionTranslatorBase):
             args
             and isinstance(
                 args[0],
-                (variables.CustomizedDictVariable, variables.UserDefinedObjectVariable),
+                (
+                    variables.CustomizedDictVariable,
+                    variables.UserDefinedObjectVariable,
+                    variables.NNModuleVariable,
+                ),
             )
         ):
             unimplemented(f"inline {code.co_name}")
