@@ -227,7 +227,7 @@ class ExportedProgram:
         self._range_constraints: "Dict[sympy.Symbol, ValueRanges]" = range_constraints
         assert module_call_graph is not None
         self._module_call_graph: List[ModuleCallEntry] = module_call_graph
-        self._example_inputs = example_inputs
+        self._example_inputs = example_inputs or ((), {})
 
         self._constants = tensor_constants or constants or {}
         assert self._constants is not None
